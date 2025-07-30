@@ -1,0 +1,34 @@
+{
+  "bugs": [
+    {
+      "id": "bug1",
+      "type": "vanishing_item",
+      "trigger": "item_spawn",
+      "message": "Item disappeared unexpectedly"
+    },
+    {
+      "id": "bug2",
+      "type": "invalid_block_placement",
+      "trigger": "place_block",
+      "message": "Cannot place block here"
+    },
+    {
+      "id": "bug3",
+      "type": "door_not_opening",
+      "trigger": "use_door",
+      "message": "Door did not open after interaction"
+    },
+    {
+      "id": "bug4",
+      "type": "jump_position_error",
+      "trigger": "jump_action",
+      "message": "Player position became invalid after jump"
+    },
+    {
+      "id": "bug5",
+      "type": "wrong_item_pickup",
+      "trigger": "pickup_item",
+      "message": "Picked up wrong item type"
+    }
+  ]
+}
