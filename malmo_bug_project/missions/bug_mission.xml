@@ -1,26 +1,71 @@
-<Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <About><Summary>Item disappearing bug mission</Summary></About>
-  <ServerSection>
-    <ServerInitialConditions>
-      <Time><StartTime>6000</StartTime><AllowPassageOfTime>false</AllowPassageOfTime></Time>
-    </ServerInitialConditions>
-    <ServerHandlers>
-      <FlatWorldGenerator generatorString="3;7,2;1;"/>
-      <DrawingDecorator>
-        <DrawItem type="apple" x="0" y="4" z="3"/>
-      </DrawingDecorator>
-      <ServerQuitFromTimeUp timeLimitMs="10000"/>
-    </ServerHandlers>
-  </ServerSection>
-  <AgentSection>
-    <Name>Agent</Name>
-    <AgentStart><Placement x="0.5" y="4" z="0.5"/></AgentStart>
-    <AgentHandlers>
-      <ObservationFromFullStats/>
-      <ContinuousMovementCommands/>
-      <RewardForCollectingItem>
-        <Item reward="5" type="apple"/>
-      </RewardForCollectingItem>
-    </AgentHandlers>
-  </AgentSection>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ProjectMalmo.microsoft.com Mission.xsd">
+
+    <About>
+        <Summary>Bug Detection Test Mission</Summary>
+        <Description>Forced bug scenario for RL training.</Description>
+    </About>
+
+    <ServerSection>
+        <ServerInitialConditions>
+            <Time>
+                <StartTime>6000</StartTime>
+                <AllowPassageOfTime>false</AllowPassageOfTime>
+            </Time>
+        </ServerInitialConditions>
+
+        <ServerHandlers>
+            <!-- 평지 생성 -->
+            <FlatWorldGenerator generatorString="3;7,2;1;"/>
+            <DrawingDecorator>
+                <!-- 목표 블록과 아이템 생성 -->
+                <DrawBlock x="3" y="1" z="3" type="diamond_block"/>
+                <DrawBlock x="2" y="1" z="3" type="diamond_block"/>
+                <DrawBlock x="1" y="1" z="3" type="diamond_block"/>
+                <DrawBlock x="0" y="1" z="3" type="diamond_block"/>
+                <DrawBlock x="5" y="2" z="5" type="wooden_door"/>
+                <DrawItem x="4" y="3" z="4" type="apple"/>
+            </DrawingDecorator>
+            <ServerQuitFromTimeUp timeLimitMs="40000"/>
+            <ServerQuitWhenAnyAgentFinishes/>
+        </ServerHandlers>
+    </ServerSection>
+
+    <AgentSection mode="Survival">
+        <Name>BugDetector</Name>
+        <AgentStart>
+            <Placement x="0.5" y="2" z="0.5" yaw="90"/>
+            <Inventory>
+        <!-- 초기화: 아무것도 넣지 않음 -->
+            </Inventory>
+        </AgentStart>
+
+        <AgentHandlers>
+            <ObservationFromFullStats/>
+            <ObservationFromNearbyEntities>
+                <Range name="entities" xrange="10" yrange="2" zrange="10"/>
+            </ObservationFromNearbyEntities>
+            <ObservationFromChat/>
+
+
+            <!-- 보상 조건 정의 -->
+            <RewardForTouchingBlockType>
+                <Block type="diamond_block" reward="10"/>
+            </RewardForTouchingBlockType>
+            <RewardForCollectingItem>
+                <Item type="apple" reward="5"/>
+            </RewardForCollectingItem>
+
+            <!-- 채팅 메시지 매칭 보상 -->
+            <RewardForSendingMatchingChatMessage>
+                <ChatMatch description="door_bug" regex="false" reward="10"/>
+                <ChatMatch description="generic_error" regex="false" reward="5"/>
+            </RewardForSendingMatchingChatMessage>
+
+            <ContinuousMovementCommands turnSpeedDegs="180"/>
+            <ChatCommands/>
+            <AgentQuitFromTimeUp timeLimitMs="40000"/>
+        </AgentHandlers>
+    </AgentSection>
+
 </Mission>
